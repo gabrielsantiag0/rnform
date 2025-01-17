@@ -1,17 +1,25 @@
 import { useRef } from "react";
-import { useForm } from "react-hook-form";
 import { Text, TextInput, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
+import { useForm } from "react-hook-form";
+import { useAccountForm } from "../../hooks/useAccountForm";
+import { AccountProps } from "../../context/AccountFormContext";
 
 import { styles } from "./styles";
 
+import { Progress } from "../components/Progress";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
 
 export function FormStepThree(){
-    const {control, handleSubmit, formState: { errors }, getValues } = useForm();
+    const { navigate } = useNavigation();
+    const { updateFormData } = useAccountForm();
+    const {control, handleSubmit, formState: { errors }, getValues } = useForm<AccountProps>();
 
-    function handleNextStep(data: any){
-        console.log(data);
+    function handleNextStep(data: AccountProps){
+        updateFormData(data);
+        navigate("finish");
     }
 
     function validationPasswordConfimation( passwordConfirmation: string ) {
@@ -53,7 +61,7 @@ export function FormStepThree(){
             />
 
             <Input
-            error={errors.passwordConfimation?.message}
+            error={errors.passwordConfirmation?.message}
             ref={passwordConfirmationRef}
              icon="lock"
              formProps={{
@@ -71,6 +79,7 @@ export function FormStepThree(){
             }}
             />
             <Button title="Continuar"onPress={handleSubmit(handleNextStep)}/>
+            <Progress progress={90}/>
         </View>
     )
 }

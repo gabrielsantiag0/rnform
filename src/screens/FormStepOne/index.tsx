@@ -3,18 +3,22 @@ import { Text, TextInput, View } from "react-native";
 
 import { useForm } from "react-hook-form";
 import { useNavigation } from "@react-navigation/native";
+import { useAccountForm } from "../../hooks/useAccountForm";
 
 import { styles } from "./styles";
 
+import { Progress } from "../components/Progress";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
+import { AccountProps } from "../../context/AccountFormContext";
 
 export function FormStepOne(){
+    const { updateFormData } = useAccountForm();
     const { navigate } = useNavigation();
+    const {control, handleSubmit, formState: { errors } } = useForm<AccountProps>();
 
-    const {control, handleSubmit, formState: { errors } } = useForm();
-
-    function handleNextStep(data: any){
+    function handleNextStep(data: AccountProps){
+        updateFormData(data)
         navigate("formStepTwo");
     }
 
@@ -64,6 +68,7 @@ export function FormStepOne(){
             }}
             />
             <Button title="Continuar"onPress={handleSubmit(handleNextStep)}/>
+            <Progress progress={30}/>
         </View>
     )
 }
